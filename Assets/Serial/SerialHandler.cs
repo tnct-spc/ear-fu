@@ -62,8 +62,10 @@ public class SerialHandler : MonoBehaviour
 
         if (thread_ != null && thread_.IsAlive)
         {
-            thread_.Join();
+            Debug.Log("Close AA");
+            thread_.Join(1000);
         }
+        Debug.Log("Close B");
 
         if (serialPort_ != null && serialPort_.IsOpen)
         {
