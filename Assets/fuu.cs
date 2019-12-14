@@ -39,6 +39,7 @@ public class fuu : MonoBehaviour
                 anim.SetBool("isFuu", true);
                 anim.SetBool("isComing", false);
                 anim.SetBool("backASAP", false);
+                //anim.CrossFade("eye_close@unitychan", 0);
                 transform.LookAt(targetOri);
                 isLook = false;
             }
