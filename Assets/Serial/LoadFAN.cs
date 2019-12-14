@@ -19,7 +19,7 @@ public class LoadFAN : MonoBehaviour
     int i = 0;
 
     public delegate void finishEventHandler();
-    public event finishEventHandler finish;
+    public event finishEventHandler Finish;
 
 
     // Start is called before the first frame update
@@ -55,7 +55,7 @@ public class LoadFAN : MonoBehaviour
             catch (System.Exception e)
             {
                 Debug.LogWarning(e.Message);
-                finish();
+                //Finish();
             }
             i++;
             
