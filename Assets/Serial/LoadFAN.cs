@@ -16,11 +16,8 @@ public class LoadFAN : MonoBehaviour
     public float timeOut;
     private float timeTrigger;
 
-    int i = 0;
-
-    public delegate void finishEventHandler();
-    public event finishEventHandler Finish;
-
+    private int i = 0;
+    private bool trigger = false;
 
     // Start is called before the first frame update
     void Start()
@@ -40,25 +37,39 @@ public class LoadFAN : MonoBehaviour
 
     }
 
+    void Play()
+    {
+        trigger = true;
+    }
+
+    void Stop() {
+        trigger = false;
+        string sendmsg = "fan " + 0 + "\r\n";
+        serial.Write(sendmsg);
+        Debug.Log("sendmsg : " + sendmsg);
+    }
+
     // Update is called once per frame
     void Update()
     {
         if (Time.time > timeTrigger)
         {
-            // Do anything
-            try
+            if (trigger)
             {
-                string sendmsg = "fan " + data[i] + "\r\n";
-                serial.Write(sendmsg);
-                Debug.Log("sendmsg : " + sendmsg);
+                try
+                {
+                    string sendmsg = "fan " + data[i] + "\r\n";
+                    serial.Write(sendmsg);
+                    Debug.Log("sendmsg : " + sendmsg);
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogWarning(e.Message);
+                }
+                i++;
+
+                if (i == data.Count) i = 0;
             }
-            catch (System.Exception e)
-            {
-                Debug.LogWarning(e.Message);
-                //Finish();
-            }
-            i++;
-            
 
             timeTrigger = Time.time + timeOut;
         }
