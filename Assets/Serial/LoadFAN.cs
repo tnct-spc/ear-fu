@@ -37,12 +37,12 @@ public class LoadFAN : MonoBehaviour
 
     }
 
-    void Play()
+    public void Play()
     {
         trigger = true;
     }
 
-    void Stop() {
+    public void Stop() {
         trigger = false;
         string sendmsg = "fan " + 0 + "\r\n";
         serial.Write(sendmsg);

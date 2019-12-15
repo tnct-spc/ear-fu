@@ -9,14 +9,27 @@ public class fuu : MonoBehaviour
     public Transform target;
     public float moveSpeed;
     private bool isLook, isBack;
+    private GameObject fan;
+    private LoadFAN FanController;
+    //public SkinnedMeshRenderer ref_SMR_EYE_DEF; //EYE_DEFへの参照
+    //public SkinnedMeshRenderer ref_SMR_EL_DEF;  //EL_DEFへの参照
+    public SkinnedMeshRenderer ref_SMR_MTH_DEF;  //MTH_DEFへの参照
+    //public float ratio_Close = 85;           //閉じ目ブレンドシェイプ比率
+    //public float ratio_Open = 0;
+    public float uuu = 100;
+    public float notUuu = 0;
+    private AudioSource sound;
 
     // Start is called before the first frame update
     void Start()
     {
+        fan = GameObject.Find("LoadFAN");
+        FanController = fan.GetComponent<LoadFAN>();
         anim = GetComponent<Animator>();
         isLook = false;
         anim.SetBool("isComing", false);
         oriPos = transform.position;
+        sound = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -27,8 +40,8 @@ public class fuu : MonoBehaviour
             targetPos = target.position;
             targetPos.y = transform.position.y;
             targetOri = targetPos;
-            targetPos.x += (float)0.8 * (Mathf.Sin((target.rotation.eulerAngles.y-90) * Mathf.Deg2Rad) * -1 );
-            targetPos.z += (float)0.8 * (Mathf.Cos((target.rotation.eulerAngles.y-90) * Mathf.Deg2Rad) * -1 );
+            targetPos.x += (float)0.4 * (Mathf.Sin((target.rotation.eulerAngles.y-110) * Mathf.Deg2Rad) * -1 );
+            targetPos.z += (float)0.4 * (Mathf.Cos((target.rotation.eulerAngles.y-110) * Mathf.Deg2Rad) * -1 );
             transform.LookAt(targetPos);
             if (transform.position.x >= targetPos.x + 0.05 || transform.position.y >= targetPos.y + 0.05 || transform.position.x <= targetPos.x - 0.05 || transform.position.y <= targetPos.y - 0.05)
             {
@@ -36,10 +49,11 @@ public class fuu : MonoBehaviour
             }
             else
             {
+                FanController.Play();
                 anim.SetBool("isFuu", true);
                 anim.SetBool("isComing", false);
-                anim.SetBool("backASAP", false);
-                //anim.CrossFade("eye_close@unitychan", 0);
+                SetFuu();
+                sound.PlayOneShot(sound.clip);
                 transform.LookAt(targetOri);
                 isLook = false;
             }
@@ -56,7 +70,6 @@ public class fuu : MonoBehaviour
             else
             {
                 anim.SetBool("isComing", false);
-                anim.SetBool("backASAP", false);
                 targetPos = target.position;
                 targetPos.y = transform.position.y;
                 transform.LookAt(targetPos);
@@ -65,7 +78,7 @@ public class fuu : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            anim.SetBool("backASAP", true);
+            FanController.Stop();
             anim.SetBool("isFuu", false);
             anim.SetBool("isComing", true);
             isLook = true;
@@ -73,6 +86,8 @@ public class fuu : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Tab))
         {
+            FanController.Stop();
+            SetNotFuu();
             anim.SetBool("isFuu", false);
             anim.SetBool("isComing", false);
             isLook = false;
@@ -80,11 +95,26 @@ public class fuu : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Backspace))
         {
-            anim.SetBool("backASAP", true);
+            FanController.Stop();
+            SetNotFuu();
             anim.SetBool("isFuu", false);
             anim.SetBool("isComing", true);
             isBack = true;
             isLook = false;
         }
+    }
+
+    void SetFuu()
+    {
+        //ref_SMR_EYE_DEF.SetBlendShapeWeight(6, ratio_Close);
+        //ref_SMR_EL_DEF.SetBlendShapeWeight(6, ratio_Close);
+        ref_SMR_MTH_DEF.SetBlendShapeWeight(8, uuu);
+    }
+
+    void SetNotFuu()
+    {
+        //ref_SMR_EYE_DEF.SetBlendShapeWeight(6, ratio_Open);
+        //ref_SMR_EL_DEF.SetBlendShapeWeight(6, ratio_Open);
+        ref_SMR_MTH_DEF.SetBlendShapeWeight(8, notUuu);
     }
 }
